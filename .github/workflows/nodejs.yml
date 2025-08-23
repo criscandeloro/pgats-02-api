@@ -23,8 +23,6 @@ jobs:
       run: npm install
 
     - name: Run software tests
-      run: npm test
-    - name: Run software tests
       run: npm run test-controller
 
     - name: Subir a API 
