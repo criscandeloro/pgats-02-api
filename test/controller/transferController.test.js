@@ -9,12 +9,30 @@ const app = require('../../app');
 // Mock
 const transferService = require('../../service/transferService');
 
+beforeEach  (async () => {
+    
+    // 1) Capturar o Token
+        const respostaLogin = await request(app)
+                .post('/users/login')
+                .send({
+                        username: 'julio',
+                        password: '123456'
+                      });
+                        
+                token = respostaLogin.body.token;
+                    });
+    
+    
+    
+
+
 // Testes
 describe('Transfer Controller', () => {
     describe('POST /transfers', () => {
         it('Quando informo remetente e destinatario inexistentes recebo 400', async () => {
             const resposta = await request(app)
                 .post('/transfers')
+                .set('Authorization', `Bearer ${token}`)
                 .send({
                     from: "julio",
                     to: "priscila",
@@ -32,6 +50,7 @@ describe('Transfer Controller', () => {
 
             const resposta = await request(app)
                 .post('/transfers')
+                .set('Authorization', `Bearer ${token}`)
                 .send({
                     from: "julio",
                     to: "priscila",
@@ -46,6 +65,9 @@ describe('Transfer Controller', () => {
         });
 
         it('Usando Mocks: Quando informo valores válidos eu tenho sucesso com 201 CREATED', async () => {
+
+            // 2) Realizar a Transferência
+
             // Mocar apenas a função transfer do Service
             const transferServiceMock = sinon.stub(transferService, 'transfer');
             transferServiceMock.returns({ 
@@ -57,9 +79,10 @@ describe('Transfer Controller', () => {
 
             const resposta = await request(app)
                 .post('/transfers')
+                .set('Authorization', `Bearer ${token}`)
                 .send({
                     from: "julio",
-                    to: "priscilaaaaaaaaaaa",
+                    to: "priscila",
                     value: 100
                 });
             
